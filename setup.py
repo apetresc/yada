@@ -12,7 +12,7 @@ setup(
 
     install_requires=[
         'Click==7.0',
-        'Jinja2==2.7.3',
+        'Jinja2==2.10.1',
         'MarkupSafe==0.23',
         'pexpect==3.2',
         'clint==0.3.7',
