@@ -6,7 +6,6 @@ import subprocess
 
 import click
 import click_pathlib
-import delegator
 from xdg import XDG_DATA_HOME
 
 import yada.repo
