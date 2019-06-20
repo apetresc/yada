@@ -17,9 +17,7 @@ setup(
     install_requires=[
         'Click==7.0',
         'click-pathlib==2019.6.13.1',
-        'Jinja2==2.10.1',
         'xdg==4.0.0',
-        'delegator.py==0.1.1'
     ],
     tests_require=[
         'pytest'

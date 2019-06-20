@@ -15,6 +15,9 @@ class Module():
         self.repo = repo
         self.name = name
 
+    def __str__(self):
+        return self.name
+
     @property
     def path(self):
         return self.repo.path / "modules" / self.name
@@ -33,7 +36,8 @@ class Module():
 
         return (
             Operation(lambda: destination.parent.mkdir(parents=True, exist_ok=True),
-                      "mkdir -p {dst}".format(dst=destination)),
+                      "mkdir -p {dst}".format(dst=destination),
+                      interactive=False),
             Operation(lambda: shutil.copy(path, destination),
                       "cp {src} {dst}".format(src=shlex.quote(str(path)),
                                               dst=shlex.quote(str(destination))))
@@ -44,6 +48,9 @@ class Repo():
     def __init__(self, name, yada_home=yada.config.get_yada_home()):
         self.name = name
         self.yada_home = pathlib.Path(yada_home)
+
+    def __str__(self):
+        return self.name
 
     @property
     def path(self):
@@ -62,9 +69,10 @@ class Repo():
 
 
 class Operation():
-    def __init__(self, f, command):
+    def __init__(self, f, command, interactive=True):
         self.f = f
         self.command = command
+        self.interactive = interactive
 
     def execute(self, interactive, dry_run):
         self.f()

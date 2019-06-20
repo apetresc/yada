@@ -53,7 +53,7 @@ def pull(ctx, location):
 
 @cli.command("import")
 @click.pass_context
-@click.option("--interactive", "-i", default=False,
+@click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
 @click.argument("module", type=str, nargs=1)
 @click.argument("files", type=click_pathlib.Path(exists=True), nargs=-1)
@@ -66,7 +66,8 @@ def import_files(ctx, interactive, module, files):
             commands = module.import_file(f)
             for command in commands:
                 click.secho(command.command, fg="yellow")
-                if not ctx.obj["dry-run"]:
+                if interactive and command.interactive and not ctx.obj["dry-run"] \
+                        and click.confirm("Take action?"):
                     command.execute(interactive, ctx.obj["dry-run"])
         elif f.is_dir():
             q += list(f.glob("**/*"))
