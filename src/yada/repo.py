@@ -2,6 +2,7 @@ import os.path
 import pathlib
 import shlex
 import shutil
+import subprocess
 
 import yada.config
 
@@ -43,6 +44,26 @@ class Module():
                                               dst=shlex.quote(str(destination))))
         )
 
+    def install(self):
+        for f in self.files_path.glob("**/*"):
+            destination = pathlib.Path("~").expanduser() / f.relative_to(self.files_path)
+            if f.is_dir():
+                yield Operation(lambda: destination.mkdir(parents=True, exist_ok=True),
+                                "mkdir -p {}".format(destination),
+                                interactive=True)
+            else:
+                command = "ln -rsf {src} {dst}".format(
+                    src=shlex.quote(str(f)),
+                    dst=shlex.quote(str(destination)))
+                def backup_and_link():
+                    if destination.is_file():
+                        shutil.copy(destination,
+                                    destination.with_suffix(destination.suffix + '.bkp'))
+                    subprocess.call(shlex.split(command))
+                yield Operation(backup_and_link,
+                                command,
+                                interactive=True)
+
 
 class Repo():
     def __init__(self, name, yada_home=yada.config.get_yada_home()):
@@ -74,5 +95,5 @@ class Operation():
         self.command = command
         self.interactive = interactive
 
-    def execute(self, interactive, dry_run):
+    def execute(self):
         self.f()
