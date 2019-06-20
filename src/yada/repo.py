@@ -49,7 +49,7 @@ class Module():
             destination = pathlib.Path("~").expanduser() / f.relative_to(self.files_path)
             if f.is_dir():
                 yield Operation(lambda: destination.mkdir(parents=True, exist_ok=True),
-                                "mkdir -p {}".format(destination),
+                                "mkdir -p {}".format(shlex.quote(destination)),
                                 interactive=True)
             else:
                 command = "ln -rsf {src} {dst}".format(
@@ -59,6 +59,32 @@ class Module():
                     if destination.is_file():
                         shutil.copy(destination,
                                     destination.with_suffix(destination.suffix + '.bkp'))
+                    subprocess.call(shlex.split(command))
+                yield Operation(backup_and_link,
+                                command,
+                                interactive=True)
+
+    def push(self, ssh_host):
+        for f in self.files_path.glob("**/*"):
+            destination = pathlib.Path("~").expanduser() / f.relative_to(self.files_path)
+            if f.is_dir():
+                command = "ssh {ssh_host} mkdir -p {dir}".format(
+                    ssh_host=ssh_host,
+                    dir=shlex.quote(str(destination)))
+                yield Operation(lambda: subprocess.call(shlex.split(command)),
+                                command,
+                                interactive=True)
+            else:
+                command = "scp -q {src} {ssh_host}:{dst}".format(
+                    ssh_host=ssh_host,
+                    src=shlex.quote(str(f)),
+                    dst=shlex.quote(str(destination)))
+                def backup_and_link():
+                    backup_command = "ssh {ssh_host} {subcommand}".format(
+                        ssh_host=ssh_host,
+                        subcommand=shlex.quote("sh -c \"cp {dst} {dst}.bkp > /dev/null 2>&1\"".format(
+                            dst=destination)))
+                    subprocess.call(shlex.split(backup_command))
                     subprocess.call(shlex.split(command))
                 yield Operation(backup_and_link,
                                 command,

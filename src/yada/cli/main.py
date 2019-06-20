@@ -90,3 +90,24 @@ def install(ctx, interactive, module):
             operation.execute()
 
     click.secho("Done!", fg="green")
+
+
+@cli.command("push")
+@click.pass_context
+@click.option("--interactive/--no-interactive", "-i", default=False,
+              help="query for confirmation before each file upload")
+@click.argument("module", type=str)
+@click.argument("ssh-host", type=str)
+def push(ctx, interactive, module, ssh_host):
+    repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
+    module = repo.module(module)
+
+    for operation in module.push(ssh_host):
+        click.secho(operation.command, fg="yellow")
+        if not ctx.obj["dry-run"] and (not interactive or not operation.interactive or
+                                       click.confirm("Take action?")):
+            operation.execute()
+
+    click.secho("Done!", fg="green")
+
+
