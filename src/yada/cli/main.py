@@ -63,12 +63,12 @@ def import_files(ctx, interactive, module, files):
     q = list(files)
     for f in q:
         if f.is_file():
-            commands = module.import_file(f)
-            for command in commands:
-                click.secho(command.command, fg="yellow")
-                if interactive and command.interactive and not ctx.obj["dry-run"] \
-                        and click.confirm("Take action?"):
-                    command.execute(interactive, ctx.obj["dry-run"])
+            operations = module.import_file(f)
+            for operation in operations:
+                click.secho(operation.command, fg="yellow")
+                if not ctx.obj["dry-run"] and (not interactive or not operation.interactive or
+                                               click.confirm("Take action?")):
+                    operation.execute(interactive, ctx.obj["dry-run"])
         elif f.is_dir():
             q += list(f.glob("**/*"))
         else:
