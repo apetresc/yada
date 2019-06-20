@@ -1,3 +1,4 @@
+import getpass
 import os
 import os.path
 import pathlib
@@ -8,6 +9,7 @@ import click
 import click_pathlib
 from xdg import XDG_DATA_HOME
 
+import yada.config
 import yada.repo
 
 
@@ -16,7 +18,7 @@ import yada.repo
               help="don't actually make any changes to the filesystem")
 @click.option("--yada-home",
               type=click_pathlib.Path(file_okay=False, dir_okay=True, writable=True),
-              default=str(XDG_DATA_HOME / "yada"),
+              default=str(yada.config.get_yada_home()),
               help="directory to store yada modules in")
 @click.pass_context
 def cli(ctx, dry_run, yada_home):
@@ -29,7 +31,7 @@ def cli(ctx, dry_run, yada_home):
 
 @cli.command()
 @click.pass_context
-@click.option("--name", type=str, default="dot",
+@click.option("--name", type=str, default=yada.config.get_default_repo_name(),
               help="")
 def init(ctx, name):
     repo = (ctx.obj["yada-home"] / name).resolve()
@@ -44,8 +46,10 @@ def init(ctx, name):
 
 @cli.command()
 @click.pass_context
-@click.argument("location")
+@click.argument("location", type=str, default="{user}/{repo}".format(
+    user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
 def pull(ctx, location):
+
     subprocess.call(["git", "clone", "git@github.com:{location}".format(location=location)],
                     cwd=ctx.obj["yada-home"])
 

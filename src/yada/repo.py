@@ -46,10 +46,10 @@ class Module():
 
     def install(self):
         for f in self.files_path.glob("**/*"):
-            destination = pathlib.Path("~").expanduser() / f.relative_to(self.files_path)
+            destination = yada.config.get_home() / f.relative_to(self.files_path)
             if f.is_dir():
                 yield Operation(lambda: destination.mkdir(parents=True, exist_ok=True),
-                                "mkdir -p {}".format(shlex.quote(destination)),
+                                "mkdir -p {}".format(shlex.quote(str(destination))),
                                 interactive=True)
             else:
                 command = "ln -rsf {src} {dst}".format(
@@ -66,7 +66,7 @@ class Module():
 
     def push(self, ssh_host):
         for f in self.files_path.glob("**/*"):
-            destination = pathlib.Path("~").expanduser() / f.relative_to(self.files_path)
+            destination = yada.config.get_home() / f.relative_to(self.files_path)
             if f.is_dir():
                 command = "ssh {ssh_host} mkdir -p {dir}".format(
                     ssh_host=ssh_host,

@@ -8,3 +8,6 @@ def get_yada_home():
 
 def get_home():
     return pathlib.Path.expanduser(pathlib.Path("~"))
+
+def get_default_repo_name():
+    return "dot"
