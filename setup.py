@@ -11,8 +11,8 @@ setup(
     description='Yet another dotfile aggregator',
 
     setup_requires=[
-        'pytest-runner',
-        'setuptools_scm'
+        'pytest-runner==5.1',
+        'setuptools_scm==3.3.3'
     ],
     install_requires=[
         'Click==7.0',
@@ -20,7 +20,8 @@ setup(
         'xdg==4.0.0',
     ],
     tests_require=[
-        'pytest'
+        'pytest==4.6.3',
+        'pyfakefs==3.5.8'
     ],
 
     entry_points='''
