@@ -46,10 +46,9 @@ def init(ctx, name):
 
 @cli.command()
 @click.pass_context
-@click.argument("location", type=str, default="{user}/{repo}".format(
+@click.argument("location", type=str, required=False, default="{user}/{repo}".format(
     user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
 def pull(ctx, location):
-
     subprocess.call(["git", "clone", "git@github.com:{location}".format(location=location)],
                     cwd=ctx.obj["yada-home"])
 
