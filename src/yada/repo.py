@@ -52,14 +52,14 @@ class Module():
                                 "mkdir -p {}".format(shlex.quote(str(destination))),
                                 interactive=True)
             else:
-                command = "ln -rsf {src} {dst}".format(
-                    src=shlex.quote(str(f)),
+                command = "ln -sf {src} {dst}".format(
+                    src=shlex.quote(str(self.repo.path_relative_to(destination.parent) / "modules" / self.name / "files" / f.relative_to(self.files_path))),
                     dst=shlex.quote(str(destination)))
                 def backup_and_link():
                     if destination.is_file():
                         shutil.copy(destination,
                                     destination.with_suffix(destination.suffix + '.bkp'))
-                    subprocess.call(shlex.split(command))
+                    subprocess.call(shlex.split(command), cwd=destination.parent)
                 yield Operation(backup_and_link,
                                 command,
                                 interactive=True)
@@ -105,9 +105,9 @@ class Repo():
 
     def path_relative_to(self, path):
         common_parent = os.path.commonpath([path, self.path])
-        return pathlib.Path(
-            os.path.join(*[".." for _ in range(
-                len(str(path).split(os.path.sep)) - len(common_parent.split(os.path.sep)))])) \
+        distance = len([p for p in str(path).split(os.path.sep) if p]) - \
+            len([p for p in common_parent.split(os.path.sep) if p])
+        return pathlib.Path(os.path.join(*[".." for _ in range(distance)]) if distance else "") \
             / self.yada_home.relative_to(common_parent) \
             / self.name
 
