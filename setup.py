@@ -16,7 +16,6 @@ setup(
     ],
     install_requires=[
         'Click==7.0',
-        'click-pathlib==2019.6.13.1',
         'xdg==4.0.0',
     ],
     tests_require=[

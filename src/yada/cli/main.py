@@ -6,18 +6,26 @@ import shlex
 import subprocess
 
 import click
-import click_pathlib
 from xdg import XDG_DATA_HOME
 
 import yada.config
 import yada.repo
 
 
+class ClickPath(click.Path):
+    """
+    A Click path argument that returns a `Path`, not a string.
+    """
+
+    def convert(self, value, param, ctx):
+        return pathlib.Path(super().convert(value=value, param=param, ctx=ctx))
+
+
 @click.group()
 @click.option("--dry-run/--no-dry-run", default=False,
               help="don't actually make any changes to the filesystem")
 @click.option("--yada-home",
-              type=click_pathlib.Path(file_okay=False, dir_okay=True, writable=True),
+              type=ClickPath(file_okay=False, dir_okay=True, writable=True),
               default=str(yada.config.get_yada_home()),
               help="directory to store yada modules in")
 @click.pass_context
@@ -58,7 +66,7 @@ def pull(ctx, location):
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
 @click.argument("module", type=str, nargs=1)
-@click.argument("files", type=click_pathlib.Path(exists=True), nargs=-1)
+@click.argument("files", type=ClickPath(exists=True), nargs=-1)
 def import_files(ctx, interactive, module, files):
     repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
     module = repo.module(module)
