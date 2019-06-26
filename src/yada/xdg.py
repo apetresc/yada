@@ -30,7 +30,7 @@ variable is not set.
 
 import os
 import sys
-if sys.version_info >= (3, 4):
+if sys.version_info >= (3, 6):
     from pathlib import Path
 else:
     from pathlib2 import Path

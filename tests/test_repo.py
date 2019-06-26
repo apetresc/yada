@@ -1,5 +1,5 @@
 import sys
-if sys.version_info >= (3, 4):
+if sys.version_info >= (3, 6):
     import pathlib
 else:
     import pathlib2 as pathlib
