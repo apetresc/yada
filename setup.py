@@ -20,7 +20,8 @@ setup(
     ],
     tests_require=[
         'pytest==4.6.3',
-        'pyfakefs==3.5.8'
+        'pyfakefs==3.5.8',
+        'tox==3.12.1'
     ],
 
     entry_points='''
