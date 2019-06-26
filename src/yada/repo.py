@@ -104,9 +104,8 @@ class Repo():
         return (self.yada_home / self.name)
 
     def path_relative_to(self, path):
-        common_parent = os.path.commonpath([path, self.path])
-        distance = len([p for p in str(path).split(os.path.sep) if p]) - \
-            len([p for p in common_parent.split(os.path.sep) if p])
+        common_parent = max(set(list(path.resolve().parents) + [path.resolve()]).intersection(self.path.resolve().parents))
+        distance = len(path.parts) - len(common_parent.parts)
         return pathlib.Path(os.path.join(*[".." for _ in range(distance)]) if distance else "") \
             / self.yada_home.relative_to(common_parent) \
             / self.name
