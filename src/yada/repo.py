@@ -1,5 +1,9 @@
 import os.path
-import pathlib
+import sys
+if sys.version_info >= (3, 4):
+    import pathlib
+else:
+    import pathlib2 as pathlib
 import shlex
 import shutil
 import subprocess

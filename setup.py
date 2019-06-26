@@ -16,7 +16,7 @@ setup(
     ],
     install_requires=[
         'Click==7.0',
-        'xdg==4.0.0',
+        'pathlib2==2.3.3;python_version<"3.4"',
     ],
     tests_require=[
         'pytest==4.6.3',

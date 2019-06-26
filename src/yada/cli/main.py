@@ -1,15 +1,19 @@
 import getpass
 import os
 import os.path
-import pathlib
+import sys
+if sys.version_info >= (3, 4):
+    import pathlib
+else:
+    import pathlib2 as pathlib
 import shlex
 import subprocess
 
 import click
-from xdg import XDG_DATA_HOME
 
 import yada.config
 import yada.repo
+from yada.xdg import XDG_DATA_HOME
 
 
 class ClickPath(click.Path):

@@ -1,4 +1,8 @@
-import pathlib
+import sys
+if sys.version_info >= (3, 4):
+    import pathlib
+else:
+    import pathlib2 as pathlib
 
 import yada.config
 import yada.repo
@@ -11,10 +15,11 @@ def test_repo_relative_to__default():
     repo = yada.repo.get_default_repo()
     
     assert repo.path_relative_to(home / "vim") == pathlib.Path("../.local/share/yada/dot")
+    assert repo.path_relative_to(home / "vim/x") == pathlib.Path("../../.local/share/yada/dot")
     assert repo.path_relative_to(home / "vim/") == pathlib.Path("../.local/share/yada/dot")
     assert repo.path_relative_to(home / "a/b/c/d") == pathlib.Path("../../../../.local/share/yada/dot")
-    assert repo.path_relative_to(home) == pathlib.Path(".local/share/yada/dot")
     assert repo.path_relative_to(home / "") == pathlib.Path(".local/share/yada/dot")
+    assert repo.path_relative_to(home) == pathlib.Path(".local/share/yada/dot")
 
 def test_repo_relative_to__root():
     repo = yada.repo.get_default_repo(yada_home="/etc/yada")
