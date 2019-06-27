@@ -29,10 +29,9 @@ variable is not set.
 """
 
 import os
-import sys
-if sys.version_info >= (3, 6):
+try:
     from pathlib import Path
-else:
+except ImportError:
     from pathlib2 import Path
 
 

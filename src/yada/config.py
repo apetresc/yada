@@ -1,7 +1,6 @@
-import sys
-if sys.version_info >= (3, 6):
+try:
     import pathlib
-else:
+except ImportError:
     import pathlib2 as pathlib
 
 from yada.xdg import XDG_DATA_HOME

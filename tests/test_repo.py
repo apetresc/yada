@@ -1,7 +1,6 @@
-import sys
-if sys.version_info >= (3, 6):
+try:
     import pathlib
-else:
+except ImportError:
     import pathlib2 as pathlib
 
 import yada.config
