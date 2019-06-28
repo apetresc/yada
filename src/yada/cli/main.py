@@ -22,7 +22,7 @@ class ClickPath(click.Path):
     """
 
     def convert(self, value, param, ctx):
-        return pathlib.Path(super().convert(value=value, param=param, ctx=ctx))
+        return pathlib.Path(super(ClickPath, self).convert(value=value, param=param, ctx=ctx))
 
 
 @click.group()
