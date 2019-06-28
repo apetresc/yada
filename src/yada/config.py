@@ -1,8 +1,8 @@
 import sys
 if sys.version_info >= (3, 6):
-    import pathlib
+    import pathlib  # pylint: disable=import-error
 else:
-    import pathlib2 as pathlib
+    import pathlib2 as pathlib  # pylint: disable=import-error
 
 from yada.xdg import XDG_DATA_HOME
 

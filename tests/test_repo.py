@@ -1,8 +1,8 @@
 import sys
 if sys.version_info >= (3, 6):
-    import pathlib
+    import pathlib  # pylint: disable=import-error
 else:
-    import pathlib2 as pathlib
+    import pathlib2 as pathlib  # pylint: disable=import-error
 
 import yada.config
 import yada.repo

@@ -31,9 +31,9 @@ variable is not set.
 import os
 import sys
 if sys.version_info >= (3, 6):
-    from pathlib import Path
+    from pathlib import Path  # pylint: disable=import-error
 else:
-    from pathlib2 import Path
+    from pathlib2 import Path  # pylint: disable=import-error
 
 
 __all__ = [
