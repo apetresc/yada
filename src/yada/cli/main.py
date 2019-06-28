@@ -1,9 +1,10 @@
 import getpass
 import os
 import os.path
-try:
+import sys
+if sys.version_info >= (3, 6):
     import pathlib
-except ImportError:
+else:
     import pathlib2 as pathlib
 import shlex
 import subprocess
