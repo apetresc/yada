@@ -15,7 +15,7 @@ setup(
         'setuptools_scm==3.3.3'
     ],
     install_requires=[
-        'Click==7.0',
+        'Click>=7.0,<8.0',
         'pathlib2==2.3.3;python_version<"3.4"',
     ],
     tests_require=[
