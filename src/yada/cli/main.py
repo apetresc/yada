@@ -61,8 +61,10 @@ def init(ctx, name):
 @click.argument("location", type=str, required=False, default="{user}/{repo}".format(
     user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
 def pull(ctx, location):
+    user, _ = location.split("/")
+    (ctx.obj["yada-home"] / user).mkdir(parents=True, exist_ok=True)
     subprocess.call(["git", "clone", "git@github.com:{location}".format(location=location)],
-                    cwd=ctx.obj["yada-home"])
+                    cwd=ctx.obj["yada-home"] / user)
 
 
 @cli.command("import")

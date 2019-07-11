@@ -17,12 +17,14 @@ setup(
     install_requires=[
         'Click>=7.0,<8.0',
         'pathlib2==2.3.3;python_version<"3.4"',
+        'pyyaml>=5.1,<6.0'
     ],
     tests_require=[
         'pytest==4.6.3',
         'pyfakefs==3.5.8',
         'tox==3.12.1'
     ],
+    package_data={'yada.data': ['config.yml']},
 
     entry_points='''
         [console_scripts]

@@ -12,7 +12,9 @@ import yada.config
 
 
 def get_default_repo(yada_home=yada.config.get_yada_home()):
-    return Repo("dot", yada_home=yada_home)
+    return Repo(yada.config.get_default_user_name(),
+                yada.config.get_default_repo_name(),
+                yada_home=yada_home)
 
 
 class Module():
@@ -96,22 +98,24 @@ class Module():
 
 
 class Repo():
-    def __init__(self, name, yada_home=yada.config.get_yada_home()):
+    def __init__(self, user, name, yada_home=yada.config.get_yada_home()):
+        self.user = user
         self.name = name
         self.yada_home = pathlib.Path(yada_home)
 
     def __str__(self):
-        return self.name
+        return "{user}/{name}".format(user=self.user, name=self.name)
 
     @property
     def path(self):
-        return (self.yada_home / self.name)
+        return (self.yada_home / self.user / self.name)
 
     def path_relative_to(self, path):
         common_parent = max(set(list(path.resolve().parents) + [path.resolve()]).intersection(self.path.resolve().parents))
         distance = len(path.parts) - len(common_parent.parts)
         return pathlib.Path(os.path.join(*[".." for _ in range(distance)]) if distance else "") \
             / self.yada_home.relative_to(common_parent) \
+            / self.user \
             / self.name
 
     def module(self, module_name):

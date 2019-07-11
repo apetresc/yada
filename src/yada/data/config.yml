@@ -1,0 +1,8 @@
+# username should match your GitHub username
+# Default: your OS-level username
+# username: 
+
+
+# default_repo_name
+# Default: dot
+default_repo_name: dot
