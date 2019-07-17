@@ -25,7 +25,7 @@ setup(
         'pyfakefs==3.5.8',
         'tox==3.12.1'
     ],
-    package_data={'yada.data': ['config.yml']},
+    package_data={'yada.data': ['config.yaml']},
 
     entry_points='''
         [console_scripts]
