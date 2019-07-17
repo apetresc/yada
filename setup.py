@@ -16,7 +16,6 @@ setup(
     ],
     install_requires=[
         'Click>=7.0,<8.0',
-        'importlib_resources==1.0.2;python_version<"3.7"',
         'pathlib2==2.3.3;python_version<"3.4"',
         'pyyaml>=5.1,<6.0'
     ],
