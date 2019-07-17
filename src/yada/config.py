@@ -24,9 +24,9 @@ def get_config():
     (XDG_CONFIG_HOME / "yada").mkdir(parents=True, exist_ok=True)
     config_path = XDG_CONFIG_HOME / "yada" / "config.yaml"
     if not config_path.exists():
-        with open(config_path, "w") as f:
+        with open(str(config_path), "w") as f:
             f.write(pkg_resources.read_text(yada.data, "config.yaml"))
-    return yaml.load(open(config_path, "r").read(), Loader=Loader)
+    return yaml.load(open(str(config_path), "r").read(), Loader=Loader)
 
 def get_yada_home():
     return XDG_DATA_HOME / "yada"
