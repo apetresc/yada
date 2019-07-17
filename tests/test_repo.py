@@ -18,22 +18,27 @@ class TestRepo(fake_filesystem_unittest.TestCase):
         self.user = yada.config.get_default_user_name()
         self.home = yada.config.get_home()
 
-
     def test_repo_relative_to__default(self):
         repo = yada.repo.get_default_repo()
         
-        assert repo.path_relative_to(self.home / "vim") == Path("../.local/share/yada/{user}/dot".format(user=self.user))
-        assert repo.path_relative_to(self.home / "vim/x") == Path("../../.local/share/yada/{user}/dot".format(user=self.user))
-        assert repo.path_relative_to(self.home / "vim/") == Path("../.local/share/yada/{user}/dot".format(user=self.user))
-        assert repo.path_relative_to(self.home / "a/b/c/d") == Path("../../../../.local/share/yada/{user}/dot".format(user=self.user))
-        assert repo.path_relative_to(self.home / "") == Path(".local/share/yada/{user}/dot".format(user=self.user))
-        assert repo.path_relative_to(self.home) == Path(".local/share/yada/{user}/dot".format(user=self.user))
-
+        assert repo.path_relative_to(self.home / "vim") == \
+            Path("../.local/share/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home / "vim/x") == \
+            Path("../../.local/share/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home / "vim/") == \
+            Path("../.local/share/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home / "a/b/c/d") == \
+            Path("../../../../.local/share/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home / "") == \
+            Path(".local/share/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home) == \
+            Path(".local/share/yada/{user}/dot".format(user=self.user))
 
     def test_repo_relative_to__root(self):
         repo = yada.repo.get_default_repo(yada_home="/etc/yada")
 
-        assert repo.path_relative_to(self.home / "vim") == Path("../../../etc/yada/{user}/dot".format(user=self.user))
+        assert repo.path_relative_to(self.home / "vim") == \
+            Path("../../../etc/yada/{user}/dot".format(user=self.user))
 
 
 class TestModule(fake_filesystem_unittest.TestCase):
