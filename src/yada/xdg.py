@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright © 2016-2019 Scott Stevenson <scott@stevenson.io>
 #
 # Permission to use, copy, modify, and/or distribute this software for
