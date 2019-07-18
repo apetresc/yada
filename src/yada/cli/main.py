@@ -60,7 +60,11 @@ def init(ctx, name):
 @click.argument("location", type=str, required=False, default="{user}/{repo}".format(
     user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
 def pull(ctx, https, location):
-    user, repo_name = location.split("/")
+    if "/" in location:
+        user, repo_name = location.split("/")
+    else:
+        user = yada.config.get_default_user_name()
+        repo_name = location
     repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
 
     if not repo.exists():
@@ -75,10 +79,17 @@ def pull(ctx, https, location):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
+@click.option("--repo", default="{user}/{repo}".format(
+    user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
 @click.argument("module", type=str, nargs=1)
 @click.argument("files", type=ClickPath(exists=True), nargs=-1)
-def import_files(ctx, interactive, module, files):
-    repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
+def import_files(ctx, interactive, repo, module, files):
+    if "/" in repo:
+        user, repo_name = repo.split("/")
+    else:
+        user = yada.config.get_default_user_name()
+        repo_name = repo
+    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
     module = repo.module(module)
     q = list(files)
     for f in q:
@@ -99,9 +110,16 @@ def import_files(ctx, interactive, module, files):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
+@click.option("--repo", default="{user}/{repo}".format(
+    user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
 @click.argument("modules", type=str, nargs=-1)
-def install(ctx, interactive, modules):
-    repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
+def install(ctx, interactive, repo, modules):
+    if "/" in repo:
+        user, repo_name = repo.split("/")
+    else:
+        user = yada.config.get_default_user_name()
+        repo_name = repo
+    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
 
     for module in modules:
         module = repo.module(module)

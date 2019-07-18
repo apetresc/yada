@@ -121,7 +121,7 @@ class Repo():
             return "https://github.com/{user}/{name}".format(user=self.user, name=self.name)
 
     def create(self):
-        self.path.mkdir(parents=True, exist_ok=True)
+        (self.path / "modules").mkdir(parents=True, exist_ok=True)
         subprocess.call(["git", "init"], cwd=str(self.path))
 
     def exists(self):
