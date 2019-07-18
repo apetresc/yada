@@ -6,7 +6,6 @@ if sys.version_info >= (3, 6):
     import pathlib  # pylint: disable=import-error
 else:
     import pathlib2 as pathlib  # pylint: disable=import-error
-import shlex
 import subprocess
 
 import click

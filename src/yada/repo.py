@@ -5,6 +5,10 @@ if sys.version_info >= (3, 6):
 else:
     import pathlib2 as pathlib  # pylint: disable=import-error
 import shlex
+if sys.version_info >= (3, 3):
+    from shlex import quote  # pylint: disable=import-error
+else:
+    from pipes import quote
 import shutil
 import subprocess
 
@@ -46,8 +50,8 @@ class Module():
                       "mkdir -p {dst}".format(dst=destination),
                       interactive=False),
             Operation(lambda: shutil.copy(path, destination),
-                      "cp {src} {dst}".format(src=shlex.quote(str(path)),
-                                              dst=shlex.quote(str(destination))))
+                      "cp {src} {dst}".format(src=quote(str(path)),
+                                              dst=quote(str(destination))))
         )
 
     def install(self):
@@ -55,12 +59,12 @@ class Module():
             destination = yada.config.get_home() / f.relative_to(self.files_path)
             if f.is_dir():
                 yield Operation(lambda: destination.mkdir(parents=True, exist_ok=True),
-                                "mkdir -p {}".format(shlex.quote(str(destination))),
+                                "mkdir -p {}".format(quote(str(destination))),
                                 interactive=True)
             else:
                 command = "ln -sf {src} {dst}".format(
-                    src=shlex.quote(str(self.repo.path_relative_to(destination.parent) / "modules" / self.name / "files" / f.relative_to(self.files_path))),
-                    dst=shlex.quote(str(destination)))
+                    src=quote(str(self.repo.path_relative_to(destination.parent) / "modules" / self.name / "files" / f.relative_to(self.files_path))),
+                    dst=quote(str(destination)))
                 def backup_and_link():
                     if destination.is_file():
                         shutil.copy(destination,
@@ -76,19 +80,19 @@ class Module():
             if f.is_dir():
                 command = "ssh {ssh_host} mkdir -p {dir}".format(
                     ssh_host=ssh_host,
-                    dir=shlex.quote(str(destination)))
+                    dir=quote(str(destination)))
                 yield Operation(lambda: subprocess.call(shlex.split(command)),
                                 command,
                                 interactive=True)
             else:
                 command = "scp -q {src} {ssh_host}:{dst}".format(
                     ssh_host=ssh_host,
-                    src=shlex.quote(str(f)),
-                    dst=shlex.quote(str(destination)))
+                    src=quote(str(f)),
+                    dst=quote(str(destination)))
                 def backup_and_link():
                     backup_command = "ssh {ssh_host} {subcommand}".format(
                         ssh_host=ssh_host,
-                        subcommand=shlex.quote("sh -c \"cp {dst} {dst}.bkp > /dev/null 2>&1\"".format(
+                        subcommand=quote("sh -c \"cp {dst} {dst}.bkp > /dev/null 2>&1\"".format(
                             dst=destination)))
                     subprocess.call(shlex.split(backup_command))
                     subprocess.call(shlex.split(command))
