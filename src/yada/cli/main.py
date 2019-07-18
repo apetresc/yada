@@ -56,13 +56,16 @@ def init(ctx, name):
 
 @cli.command()
 @click.pass_context
+@click.option("--https/--ssh", default=False,
+              help="whether to clone via HTTPS or SSH (default)")
 @click.argument("location", type=str, required=False, default="{user}/{repo}".format(
     user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
-def pull(ctx, location):
-    user, _ = location.split("/")
-    (ctx.obj["yada-home"] / user).mkdir(parents=True, exist_ok=True)
-    subprocess.call(["git", "clone", "git@github.com:{location}".format(location=location)],
-                    cwd=str(ctx.obj["yada-home"] / user))
+def pull(ctx, https, location):
+    user, repo_name = location.split("/")
+    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
+    repo.path.parent.mkdir(parents=True, exist_ok=False)
+    subprocess.call(["git", "clone", repo.git_url(protocol="https" if https else "ssh")],
+                    cwd=str(repo.path.parent))
 
 
 @cli.command("import")

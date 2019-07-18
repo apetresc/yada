@@ -110,6 +110,12 @@ class Repo():
     def path(self):
         return (self.yada_home / self.user / self.name)
 
+    def git_url(self, protocol="ssh"):
+        if protocol == "ssh":
+            return "git@github.com:{user}/{name}.git".format(user=self.user, name=self.name)
+        elif protocol == "https":
+            return "https://github.com/{user}/{name}".format(user=self.user, name=self.name)
+
     def create(self):
         self.path.mkdir(parents=True, exist_ok=True)
         subprocess.call(["git", "init"], cwd=str(self.path))
