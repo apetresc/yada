@@ -49,7 +49,7 @@ class Module():
             Operation(lambda: destination.parent.mkdir(parents=True, exist_ok=True),
                       "mkdir -p {dst}".format(dst=destination),
                       interactive=False),
-            Operation(lambda: shutil.copy(path, destination),
+            Operation(lambda: shutil.copy(str(path), str(destination)),
                       "cp {src} {dst}".format(src=quote(str(path)),
                                               dst=quote(str(destination))))
         )
@@ -67,8 +67,8 @@ class Module():
                     dst=quote(str(destination)))
                 def backup_and_link():
                     if destination.is_file():
-                        shutil.copy(destination,
-                                    destination.with_suffix(destination.suffix + '.bkp'))
+                        shutil.copy(str(destination),
+                                    str(destination.with_suffix(destination.suffix + '.bkp')))
                     subprocess.call(shlex.split(command), cwd=str(destination.parent))
                 yield Operation(backup_and_link,
                                 command,
