@@ -110,6 +110,13 @@ class Repo():
     def path(self):
         return (self.yada_home / self.user / self.name)
 
+    def create(self):
+        self.path.mkdir(parents=True, exist_ok=True)
+        subprocess.call(["git", "init"], cwd=self.path)
+
+    def exists(self):
+        return (self.path / ".git").exists() and (self.path / ".git").is_dir()
+
     def path_relative_to(self, path):
         common_parent = max(set(list(path.resolve().parents) + [path.resolve()]).intersection(self.path.resolve().parents))
         distance = len(path.parts) - len(common_parent.parts)

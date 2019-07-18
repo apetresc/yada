@@ -46,14 +46,12 @@ def cli(ctx, dry_run, yada_home):
 @click.option("--name", type=str, default=yada.config.get_default_repo_name(),
               help="")
 def init(ctx, name):
-    repo = (ctx.obj["yada-home"] / name).resolve()
+    repo = yada.repo.Repo(user=yada.config.get_default_user_name(), name=name)
 
-    if (repo / ".git").exists() and (repo / ".git").is_dir():
+    if repo.exists():
         click.secho("Repo {path} already exists.".format(path=repo), fg="yellow")
-        return
-
-    repo.mkdir(parents=True, exist_ok=True)
-    subprocess.call(["git", "init"], cwd=repo)
+    else:
+        repo.create()
 
 
 @cli.command()
