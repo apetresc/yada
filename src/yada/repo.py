@@ -65,7 +65,7 @@ class Module():
                     if destination.is_file():
                         shutil.copy(destination,
                                     destination.with_suffix(destination.suffix + '.bkp'))
-                    subprocess.call(shlex.split(command), cwd=destination.parent)
+                    subprocess.call(shlex.split(command), cwd=str(destination.parent))
                 yield Operation(backup_and_link,
                                 command,
                                 interactive=True)
@@ -112,7 +112,7 @@ class Repo():
 
     def create(self):
         self.path.mkdir(parents=True, exist_ok=True)
-        subprocess.call(["git", "init"], cwd=self.path)
+        subprocess.call(["git", "init"], cwd=str(self.path))
 
     def exists(self):
         return (self.path / ".git").exists() and (self.path / ".git").is_dir()
