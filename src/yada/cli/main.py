@@ -65,7 +65,7 @@ def pull(ctx, https, location):
     repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
 
     if not repo.exists():
-        repo.path.parent.mkdir(parents=True, exist_ok=False)
+        repo.path.parent.mkdir(parents=True, exist_ok=True)
         subprocess.call(["git", "clone", repo.git_url(protocol="https" if https else "ssh")],
                         cwd=str(repo.path.parent))
     else:
