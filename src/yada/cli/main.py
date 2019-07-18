@@ -63,9 +63,13 @@ def init(ctx, name):
 def pull(ctx, https, location):
     user, repo_name = location.split("/")
     repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
-    repo.path.parent.mkdir(parents=True, exist_ok=False)
-    subprocess.call(["git", "clone", repo.git_url(protocol="https" if https else "ssh")],
-                    cwd=str(repo.path.parent))
+
+    if not repo.exists():
+        repo.path.parent.mkdir(parents=True, exist_ok=False)
+        subprocess.call(["git", "clone", repo.git_url(protocol="https" if https else "ssh")],
+                        cwd=str(repo.path.parent))
+    else:
+        subprocess.call(["git", "pull"], cwd=str(repo.path))
 
 
 @cli.command("import")
