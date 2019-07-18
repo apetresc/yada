@@ -100,16 +100,18 @@ def import_files(ctx, interactive, module, files):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
-@click.argument("module", type=str)
-def install(ctx, interactive, module):
+@click.argument("modules", type=str, nargs=-1)
+def install(ctx, interactive, modules):
     repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
-    module = repo.module(module)
 
-    for operation in module.install():
-        click.secho(operation.command, fg="yellow")
-        if not ctx.obj["dry-run"] and (not interactive or not operation.interactive or
-                                       click.confirm("Take action?")):
-            operation.execute()
+    for module in modules:
+        module = repo.module(module)
+        click.secho("Installing module {}...".format(module), fg="green")
+        for operation in module.install():
+            click.secho(operation.command, fg="yellow")
+            if not ctx.obj["dry-run"] and (not interactive or not operation.interactive or
+                                           click.confirm("Take action?")):
+                operation.execute()
 
     click.secho("Done!", fg="green")
 
