@@ -45,11 +45,17 @@ class Module():
             path = pathlib.Path.cwd() / path
         destination = self.files_path / path.relative_to(yada.config.get_home())
 
+        def copy(src, dst):
+            try:
+                shutil.copy(str(src), str(dst))
+            except shutil.SameFileError:
+                pass
+
         return (
             Operation(lambda: destination.parent.mkdir(parents=True, exist_ok=True),
                       "mkdir -p {dst}".format(dst=destination),
                       interactive=False),
-            Operation(lambda: shutil.copy(str(path), str(destination)),
+            Operation(lambda: copy(path, destination),
                       "cp {src} {dst}".format(src=quote(str(path)),
                                               dst=quote(str(destination))))
         )
