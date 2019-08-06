@@ -79,7 +79,7 @@ def pull(ctx, https, location):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
-@click.option("--repo", default="{user}/{repo}".format(
+@click.option("--repo", "-r", default="{user}/{repo}".format(
     user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
 @click.argument("module", type=str, nargs=1)
 @click.argument("files", type=ClickPath(exists=True), nargs=-1)
@@ -110,7 +110,7 @@ def import_files(ctx, interactive, repo, module, files):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
-@click.option("--repo", default="{user}/{repo}".format(
+@click.option("--repo", "-r", default="{user}/{repo}".format(
     user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
 @click.argument("modules", type=str, nargs=-1)
 def install(ctx, interactive, repo, modules):
