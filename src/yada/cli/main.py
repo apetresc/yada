@@ -166,7 +166,7 @@ def info(ctx, repo, module):
 
     if module.files_path.exists():
         click.secho(header("FILES"), fg="yellow")
-        for root, _, files in os.walk(module.files_path):
+        for root, _, files in os.walk(str(module.files_path)):
             level = root.replace(str(module.files_path), '').count(os.sep)
             indent = ' ' * 4 * (level)
             print('{}{}/'.format(indent, os.path.basename(root)))
