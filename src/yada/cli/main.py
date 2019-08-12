@@ -24,6 +24,21 @@ class ClickPath(click.Path):
         return pathlib.Path(super(ClickPath, self).convert(value=value, param=param, ctx=ctx))
 
 
+class RepoType(click.ParamType):
+    name = "Repo"
+
+    def convert(self, value, param, ctx):
+        if value is None:
+            return None
+        elif isinstance(value, yada.repo.Repo):
+            return value
+        elif "/" in value:
+            user, repo = value.split("/")
+        else:
+            user, repo = yada.config.get_default_user_name(), value
+        return yada.repo.Repo(user=user, name=repo, yada_home=ctx.obj["yada-home"])
+
+
 @click.group()
 @click.option("--dry-run/--no-dry-run", default=False,
               help="don't actually make any changes to the filesystem")
@@ -57,16 +72,8 @@ def init(ctx, name):
 @click.pass_context
 @click.option("--https/--ssh", default=False,
               help="whether to clone via HTTPS or SSH (default)")
-@click.argument("location", type=str, required=False, default="{user}/{repo}".format(
-    user=getpass.getuser(), repo=yada.config.get_default_repo_name()))
-def pull(ctx, https, location):
-    if "/" in location:
-        user, repo_name = location.split("/")
-    else:
-        user = yada.config.get_default_user_name()
-        repo_name = location
-    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
-
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
+def pull(ctx, https, repo):
     if not repo.exists():
         repo.path.parent.mkdir(parents=True, exist_ok=True)
         subprocess.call(["git", "clone", repo.git_url(protocol="https" if https else "ssh")],
@@ -79,17 +86,10 @@ def pull(ctx, https, location):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
-@click.option("--repo", "-r", default="{user}/{repo}".format(
-    user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
 @click.argument("module", type=str, nargs=1)
 @click.argument("files", type=ClickPath(exists=True), nargs=-1)
 def import_files(ctx, interactive, repo, module, files):
-    if "/" in repo:
-        user, repo_name = repo.split("/")
-    else:
-        user = yada.config.get_default_user_name()
-        repo_name = repo
-    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
     module = repo.module(module)
     q = list(files)
     for f in q:
@@ -110,17 +110,9 @@ def import_files(ctx, interactive, repo, module, files):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
-@click.option("--repo", "-r", default="{user}/{repo}".format(
-    user=yada.config.get_default_user_name(), repo=yada.config.get_default_repo_name()))
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
 @click.argument("modules", type=str, nargs=-1)
 def install(ctx, interactive, repo, modules):
-    if "/" in repo:
-        user, repo_name = repo.split("/")
-    else:
-        user = yada.config.get_default_user_name()
-        repo_name = repo
-    repo = yada.repo.Repo(user, repo_name, yada_home=ctx.obj["yada-home"])
-
     for module in modules:
         module = repo.module(module)
         click.secho("Installing module {}...".format(module), fg="green")
@@ -137,10 +129,10 @@ def install(ctx, interactive, repo, modules):
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before each file upload")
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
 @click.argument("module", type=str)
 @click.argument("ssh-host", type=str)
-def push(ctx, interactive, module, ssh_host):
-    repo = yada.repo.get_default_repo(ctx.obj["yada-home"])
+def push(ctx, interactive, repo, module, ssh_host):
     module = repo.module(module)
 
     for operation in module.push(ssh_host):

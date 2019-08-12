@@ -34,3 +34,4 @@ def get_default_user_name():
 
 def get_default_repo_name():
     return get_config().get("default_repo_name", "dot")
+
