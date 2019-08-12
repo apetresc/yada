@@ -169,8 +169,8 @@ def info(ctx, repo, module):
         for root, _, files in os.walk(str(module.files_path)):
             level = root.replace(str(module.files_path), '').count(os.sep)
             indent = ' ' * 4 * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)))
+            click.secho('{}{}/'.format(indent, os.path.basename(root)), fg="bright_black")
             subindent = ' ' * 4 * (level + 1)
             for f in files:
-                print('{}{}'.format(subindent, f))
+                click.secho('{}{}'.format(subindent, f), fg="green")
 
