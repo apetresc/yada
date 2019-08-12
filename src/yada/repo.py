@@ -37,6 +37,17 @@ class Module():
     def files_path(self):
         return self.path / "files"
 
+    @property
+    def readme_path(self):
+        for ext in [".md", ".txt", ""]:
+            path = (self.path / "README{ext}".format(ext=ext))
+            if path.exists():
+                return path
+        return None
+
+    def exists(self):
+        return self.path.exists() and self.path.is_dir()
+
     def create(self):
         self.files_path.mkdir(parents=True, exist_ok=True)
 

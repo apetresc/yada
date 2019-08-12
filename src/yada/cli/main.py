@@ -144,3 +144,33 @@ def push(ctx, interactive, repo, module, ssh_host):
     click.secho("Done!", fg="green")
 
 
+@cli.command("info")
+@click.pass_context
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
+@click.argument("module")
+def info(ctx, repo, module):
+    module = repo.module(module)
+
+    def header(title, width=80):
+        ew = (width - len(title) - 2) // 2
+        return "=" * ew + " " + title + " " + "=" * (width - (ew + len(title) + 2))
+
+    if not module.exists():
+        click.secho("Module {repo}:{module} not found!".format(repo=repo, module=module), fg="red")
+        sys.exit(1)
+    click.secho("Module {module}".format(module=module), fg="yellow")
+
+    if module.readme_path:
+        click.secho(header(module.readme_path.name), fg="yellow")
+        click.echo(open(module.readme_path, "r").read())
+
+    if module.files_path.exists():
+        click.secho(header("FILES"), fg="yellow")
+        for root, _, files in os.walk(module.files_path):
+            level = root.replace(str(module.files_path), '').count(os.sep)
+            indent = ' ' * 4 * (level)
+            print('{}{}/'.format(indent, os.path.basename(root)))
+            subindent = ' ' * 4 * (level + 1)
+            for f in files:
+                print('{}{}'.format(subindent, f))
+
