@@ -172,5 +172,14 @@ def info(ctx, repo, module):
             click.secho('{}{}/'.format(indent, os.path.basename(root)), fg="bright_black")
             subindent = ' ' * 4 * (level + 1)
             for f in files:
-                click.secho('{}{}'.format(subindent, f), fg="green")
+                target_path = yada.config.get_home() / \
+                    pathlib.Path(root, f).relative_to(module.files_path)
+                if not target_path.exists():
+                    fg = "red"
+                elif target_path.is_symlink() and \
+                        target_path.resolve() == pathlib.Path(root, f).resolve():
+                    fg = "green"
+                else:
+                    fg = "yellow"
+                click.secho('{}{}'.format(subindent, f), fg=fg)
 
