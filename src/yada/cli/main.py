@@ -158,11 +158,13 @@ def info(ctx, repo, module):
     if not module.exists():
         click.secho("Module {repo}:{module} not found!".format(repo=repo, module=module), fg="red")
         sys.exit(1)
-    click.secho("Module {module}".format(module=module), fg="yellow")
+
+    click.secho(header("{repo}:{module}".format(repo=repo, module=module)), fg="yellow")
 
     if module.readme_path:
-        click.secho(header(module.readme_path.name), fg="yellow")
         click.echo(open(module.readme_path, "r").read())
+    else:
+        click.secho("(No README found)", fg="bright_black")
 
     if module.files_path.exists():
         click.secho(header("FILES"), fg="yellow")
@@ -183,3 +185,14 @@ def info(ctx, repo, module):
                     fg = "yellow"
                 click.secho('{}{}'.format(subindent, f), fg=fg)
 
+    click.secho(header("RECENT CHANGES"), fg="yellow")
+    subprocess.call(["git",
+                     "log",
+                     "--graph",
+                     "--pretty=format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
+                     "--abbrev-commit",
+                     "--date=relative",
+                     "--max-count=10",
+                     "--",
+                     "modules/{module}".format(module=module)],
+                    cwd=str(repo.path), stdout=sys.stdout, stderr=subprocess.STDOUT)
