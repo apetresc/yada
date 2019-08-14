@@ -21,8 +21,7 @@ setup(
     ],
     tests_require=[
         'pytest==4.6.3',
-        'pyfakefs==3.6',
-        'tox==3.12.1'
+        'pyfakefs==3.6'
     ],
     package_data={'yada.data': ['config.yaml']},
 
