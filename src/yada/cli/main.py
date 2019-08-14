@@ -189,7 +189,7 @@ def info(ctx, repo, module):
     subprocess.call(["git",
                      "log",
                      "--graph",
-                     "--pretty=format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
+                     "--pretty=format:%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
                      "--abbrev-commit",
                      "--date=relative",
                      "--max-count=10",
