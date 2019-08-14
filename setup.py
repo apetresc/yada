@@ -12,7 +12,6 @@ setup(
 
     setup_requires=[
         'pytest-runner==5.1',
-        'setuptools>=40.0',
         'setuptools_scm==3.3.3'
     ],
     install_requires=[
