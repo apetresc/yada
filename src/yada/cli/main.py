@@ -158,19 +158,41 @@ def info(ctx, repo, module):
     if not module.exists():
         click.secho("Module {repo}:{module} not found!".format(repo=repo, module=module), fg="red")
         sys.exit(1)
-    click.secho("Module {module}".format(module=module), fg="yellow")
+
+    click.secho(header("{repo}:{module}".format(repo=repo, module=module)), fg="yellow")
 
     if module.readme_path:
-        click.secho(header(module.readme_path.name), fg="yellow")
         click.echo(open(module.readme_path, "r").read())
+    else:
+        click.secho("(No README found)", fg="bright_black")
 
     if module.files_path.exists():
         click.secho(header("FILES"), fg="yellow")
         for root, _, files in os.walk(str(module.files_path)):
             level = root.replace(str(module.files_path), '').count(os.sep)
             indent = ' ' * 4 * (level)
-            print('{}{}/'.format(indent, os.path.basename(root)))
+            click.secho('{}{}/'.format(indent, os.path.basename(root)), fg="bright_black")
             subindent = ' ' * 4 * (level + 1)
             for f in files:
-                print('{}{}'.format(subindent, f))
+                target_path = yada.config.get_home() / \
+                    pathlib.Path(root, f).relative_to(module.files_path)
+                if not target_path.exists():
+                    fg = "red"
+                elif target_path.is_symlink() and \
+                        target_path.resolve() == pathlib.Path(root, f).resolve():
+                    fg = "green"
+                else:
+                    fg = "yellow"
+                click.secho('{}{}'.format(subindent, f), fg=fg)
 
+    click.secho(header("RECENT CHANGES"), fg="yellow")
+    subprocess.call(["git",
+                     "log",
+                     "--graph",
+                     "--pretty=format:%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
+                     "--abbrev-commit",
+                     "--date=relative",
+                     "--max-count=10",
+                     "--",
+                     "modules/{module}".format(module=module)],
+                    cwd=str(repo.path), stdout=sys.stdout, stderr=subprocess.STDOUT)
