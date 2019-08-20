@@ -82,6 +82,12 @@ def pull(ctx, https, repo):
         subprocess.call(["git", "pull"], cwd=str(repo.path))
 
 
+@cli.command()
+@click.pass_context
+@click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
+def home(ctx, repo):
+    click.echo(repo.path)
+
 @cli.command("import")
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
