@@ -56,12 +56,12 @@ def cli(ctx, dry_run, yada_home):
     ctx.obj["yada-home"] = yada_home
 
 
-@cli.command()
+@cli.command(help="print version number and exit")
 def version():
     click.echo(get_distribution("yada").version)
 
 
-@cli.command()
+@cli.command(help="create a brand new dotfile repo")
 @click.pass_context
 @click.option("--name", type=str, default=yada.config.get_default_repo_name(),
               help="")
@@ -74,7 +74,7 @@ def init(ctx, name):
         repo.create()
 
 
-@cli.command()
+@cli.command(help="pull new changes to the repo")
 @click.pass_context
 @click.option("--https/--ssh", default=False,
               help="whether to clone via HTTPS or SSH (default)")
@@ -88,13 +88,14 @@ def pull(ctx, https, repo):
         subprocess.call(["git", "pull"], cwd=str(repo.path))
 
 
-@cli.command()
+@cli.command(help="print path to the repo")
 @click.pass_context
 @click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
 def home(ctx, repo):
     click.echo(repo.path)
 
-@cli.command("import")
+
+@cli.command("import", help="import an existing file into a module")
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
@@ -118,7 +119,7 @@ def import_files(ctx, interactive, repo, module, files):
             click.secho("{} is an invalid file to import".format(f), fg="red")
 
 
-@cli.command("install")
+@cli.command("install", help="symlink all files from a module into $HOME")
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before every filesystem operation")
@@ -137,7 +138,7 @@ def install(ctx, interactive, repo, modules):
     click.secho("Done!", fg="green")
 
 
-@cli.command("push")
+@cli.command("push", help="scp a module to a remote SSH host")
 @click.pass_context
 @click.option("--interactive/--no-interactive", "-i", default=False,
               help="query for confirmation before each file upload")
@@ -156,7 +157,7 @@ def push(ctx, interactive, repo, module, ssh_host):
     click.secho("Done!", fg="green")
 
 
-@cli.command("info")
+@cli.command("info", help="print a helpful summary of a module's contents and changes")
 @click.pass_context
 @click.option("--repo", "-r", type=RepoType(), default=yada.repo.get_default_repo())
 @click.argument("module")
