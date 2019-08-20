@@ -1,6 +1,7 @@
 import getpass
 import os
 import os.path
+from pkg_resources import get_distribution
 import sys
 if sys.version_info >= (3, 6):
     import pathlib  # pylint: disable=import-error
@@ -53,6 +54,11 @@ def cli(ctx, dry_run, yada_home):
     ctx.ensure_object(dict)
     ctx.obj["dry-run"] = dry_run
     ctx.obj["yada-home"] = yada_home
+
+
+@cli.command()
+def version():
+    click.echo(get_distribution("yada").version)
 
 
 @cli.command()
