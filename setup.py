@@ -12,7 +12,8 @@ setup(
 
     setup_requires=[
         'pytest-runner==5.1',
-        'setuptools_scm==3.3.3'
+        'setuptools_scm==3.3.3',
+        'wheel'
     ],
     install_requires=[
         'Click>=7.0,<8.0',
