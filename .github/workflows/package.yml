@@ -1,9 +1,6 @@
 name: Deploy Python Package to PyPI
 
-on:
-  push:
-    tags:
-    - v*
+on: release
 
 jobs:
   deploy:
