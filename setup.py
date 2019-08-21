@@ -13,7 +13,8 @@ setup(
     setup_requires=[
         'pytest-runner==5.1',
         'setuptools_scm==3.3.3',
-        'wheel'
+        'twine==1.13.0',
+        'wheel',
     ],
     install_requires=[
         'Click>=7.0,<8.0',
