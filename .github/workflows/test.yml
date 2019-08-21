@@ -1,6 +1,11 @@
 name: Python package
 
-on: [push]
+on:
+  push:
+    paths:
+      - src/*
+      - tests/*
+      - setup.py
 
 jobs:
   build:
