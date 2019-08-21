@@ -12,7 +12,9 @@ setup(
 
     setup_requires=[
         'pytest-runner==5.1',
-        'setuptools_scm==3.3.3'
+        'setuptools_scm==3.3.3',
+        'twine==1.13.0',
+        'wheel',
     ],
     install_requires=[
         'Click>=7.0,<8.0',
@@ -21,8 +23,7 @@ setup(
     ],
     tests_require=[
         'pytest==4.6.3',
-        'pyfakefs==3.6',
-        'tox==3.12.1'
+        'pyfakefs==3.6'
     ],
     package_data={'yada.data': ['config.yaml']},
 
