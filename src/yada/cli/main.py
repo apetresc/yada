@@ -10,6 +10,7 @@ else:
 import subprocess
 
 import click
+import mdv
 
 import yada.config
 import yada.repo
@@ -175,7 +176,7 @@ def info(ctx, repo, module):
     click.secho(header("{repo}:{module}".format(repo=repo, module=module)), fg="yellow")
 
     if module.readme_path:
-        click.echo(open(str(module.readme_path), "r").read())
+        click.echo(mdv.main(open(str(module.readme_path), "r").read()))
     else:
         click.secho("(No README found)", fg="bright_black")
 
