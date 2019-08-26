@@ -93,7 +93,7 @@ class Module():
 
     def push(self, ssh_host):
         for f in self.files_path.glob("**/*"):
-            destination = yada.config.get_home() / f.relative_to(self.files_path)
+            destination = pathlib.Path("~") / f.relative_to(self.files_path)
             if f.is_dir():
                 command = "ssh {ssh_host} mkdir -p {dir}".format(
                     ssh_host=ssh_host,
