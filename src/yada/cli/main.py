@@ -200,6 +200,7 @@ def info(ctx, repo, module):
 
     click.secho(header("RECENT CHANGES"), fg="yellow")
     subprocess.call(["git",
+                     "--no-pager",
                      "log",
                      "--graph",
                      "--pretty=format:%Cred%h%Creset -%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
