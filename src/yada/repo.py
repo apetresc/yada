@@ -79,14 +79,19 @@ class Module():
                                 "mkdir -p {}".format(quote(str(destination))),
                                 interactive=True)
             else:
+                src = self.repo.path_relative_to(destination.parent) \
+                    / "modules" \
+                    / self.name \
+                    / "files" \
+                    / f.relative_to(self.files_path)
                 command = "ln -sf {src} {dst}".format(
-                    src=quote(str(self.repo.path_relative_to(destination.parent) / "modules" / self.name / "files" / f.relative_to(self.files_path))),
+                    src=quote(str(src)),
                     dst=quote(str(destination)))
                 def backup_and_link():
                     if destination.is_file():
-                        shutil.copy(str(destination),
+                        shutil.move(str(destination),
                                     str(destination.with_suffix(destination.suffix + '.bkp')))
-                    subprocess.call(shlex.split(command), cwd=str(destination.parent))
+                    os.symlink(src, destination)
                 yield Operation(backup_and_link,
                                 command,
                                 interactive=True)
