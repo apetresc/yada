@@ -22,7 +22,7 @@ REQUIRED = [
     'six>=1.10.0',
     'Click>=7.0,<8.0',
     'pathlib2==2.3.3;python_version<"3.4"',
-    'pyyaml>=3.12,<6.0',
+    "pyyaml!=6.0.0,!=5.4.0,!=5.4.1", # pyyaml is broken with cython 3
 ]
 
 SETUP_REQUIRED = [
