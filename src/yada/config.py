@@ -1,5 +1,5 @@
 import getpass
-import pkg_resources
+import importlib.resources
 import sys
 if sys.version_info >= (3, 6):
     import pathlib  # pylint: disable=import-error
@@ -20,7 +20,7 @@ def get_config():
     config_path = XDG_CONFIG_HOME / "yada" / "config.yaml"
     if not config_path.exists():
         with open(str(config_path), "wb") as f:
-            f.write(pkg_resources.resource_string("yada.data", "config.yaml"))
+            f.write(importlib.resources.read_binary("yada.data", "config.yaml"))
     return yaml.load(open(str(config_path), "r").read(), Loader=Loader)
 
 def get_yada_home():

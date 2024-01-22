@@ -1,7 +1,7 @@
 import getpass
+import importlib.metadata
 import os
 import os.path
-from pkg_resources import get_distribution
 import sys
 if sys.version_info >= (3, 6):
     import pathlib  # pylint: disable=import-error
@@ -58,7 +58,7 @@ def cli(ctx, dry_run, yada_home):
 
 @cli.command(help="print version number and exit")
 def version():
-    click.echo(get_distribution("yada").version)
+    click.echo(importlib.metadata.version("yada"))
 
 
 @cli.command(help="create a brand new dotfile repo")

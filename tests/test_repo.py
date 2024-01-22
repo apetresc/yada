@@ -3,7 +3,7 @@ if sys.version_info >= (3, 6):
     from pathlib import Path  # pylint: disable=import-error
 else:
     from pathlib2 import Path  # pylint: disable=import-error
-import pkg_resources
+import importlib.resources
 from pyfakefs import fake_filesystem_unittest
 
 import yada.xdg
@@ -14,7 +14,7 @@ import yada.repo
 class TestRepo(fake_filesystem_unittest.TestCase):
     def setUp(self):
         self.setUpPyfakefs(modules_to_reload=[yada.xdg, yada.config])
-        self.fs.add_real_paths([pkg_resources.resource_filename("yada.data", "config.yaml")])
+        self.fs.add_real_paths([importlib.resources.files("yada") / "data/config.yaml"])
         self.user = yada.config.get_default_user_name()
         self.home = yada.config.get_home()
 
