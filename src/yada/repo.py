@@ -38,6 +38,10 @@ class Module():
         return self.path / "files"
 
     @property
+    def scripts_path(self):
+        return self.path / "scripts"
+
+    @property
     def readme_path(self):
         for ext in [".md", ".txt", ""]:
             path = (self.path / "README{ext}".format(ext=ext))
@@ -72,7 +76,12 @@ class Module():
         )
 
     def install(self):
-        for f in self.files_path.glob("**/*"):
+        for f in self.scripts_path.glob('0*'):
+            # Pre-installation scripts are prefixed with 0.
+            yield Operation(lambda: subprocess.call([f]),
+                            quote(str(f)),
+                            interactive=True)
+        for f in self.files_path.rglob("*"):
             destination = yada.config.get_home() / f.relative_to(self.files_path)
             if f.is_dir():
                 yield Operation(lambda: destination.mkdir(parents=True, exist_ok=True),
@@ -96,8 +105,15 @@ class Module():
                                 command,
                                 interactive=True)
 
+        for f in self.scripts_path.glob('[123456789]*'):
+            # Post-installation scripts can start
+            yield Operation(lambda: subprocess.call([f]),
+                            quote(str(f)),
+                            interactive=True)
+ 
+
     def push(self, ssh_host):
-        for f in self.files_path.glob("**/*"):
+        for f in self.files_path.rglob("*"):
             destination = pathlib.Path("~") / f.relative_to(self.files_path)
             if f.is_dir():
                 command = "ssh {ssh_host} mkdir -p {dir}".format(
@@ -162,10 +178,30 @@ class Repo():
 
 
 class Operation():
+    """
+    Wrapper for complex operations, usually involving the filesystem.
+
+    Instead of directly acting on the user's system when commands are called,
+    we instead return these Operation objects which can defer execution after
+    prompting the user for confirmation, etc.
+    """
+
     def __init__(self, f, command, interactive=True):
+        """
+        :param f: the function to be called when this Operation is execute()d.
+        :param command: the 'shell equivalent' of `f`. It is usually NOT the
+        case that this Operation will literally shell out and execute this
+        exact command. It is just meant to be a readable form that the user can
+        decide to allow or not.
+        :param interactive: a bool indicating whether the Operation should
+        prompt the user for confirmation when running in interactive mode.
+        """
         self.f = f
         self.command = command
         self.interactive = interactive
 
     def execute(self):
+        """
+        Executes the operation, potentially modifying the filesystem
+        """
         self.f()
